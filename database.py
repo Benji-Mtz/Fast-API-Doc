@@ -1,4 +1,6 @@
 import hashlib
+
+# ORM peewee for MySQL u other databases *
 from peewee import *
 from datetime import datetime
 
@@ -8,16 +10,18 @@ database = MySQLDatabase('fastapi_project',
                          host='localhost',
                          port=3306)
 
-# Diseño de Modelos
+# Diseño de Modelos para las Tablas siempre heredan de Model
 # Atributos = columnas en tablas
 class User(Model):
     username = CharField(max_length=50, unique=True)
     password = CharField(max_length=50)
     created_at = DateTimeField(default=datetime.now)
     
+    # Info a imprimir cuando se agrague un usuario
     def __str__(self):
         return self.username
     
+    # Asignamos la base de datos y la tabla
     class Meta:
         database = database
         table_name = 'users'

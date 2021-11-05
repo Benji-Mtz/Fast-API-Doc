@@ -3,10 +3,12 @@ from typing import List
 from fastapi import FastAPI
 from fastapi import HTTPException
 
+# Imprtaciones de modelos de Tablas
 from database import User
 from database import Movie
 from database import UserReview
 
+# Importacion de la base de datos
 from database import database as connection
 
 from schemas import UserRequestModel
@@ -16,24 +18,29 @@ from schemas import ReviewRequestModel
 from schemas import ReviewResponseModel
 from schemas import ReviewRequestPutModel
 
-
 app = FastAPI(title='Proyecto para reseñas de peliculas',
             description='En este proyecto seremos capaces de reseñar peliculas',
             version='1.0')
 
+
+# Los eventos on_event ejecutan una funcion antes de iniciar y al terminar el servidor uvicorn
 @app.on_event('startup')
 def startup():
     if connection.is_closed():
         connection.connect()
-    
+        print('[Database] connected')
+    # Creacion de la tablas si no existen, si ya existe lo omite
     connection.create_tables([User, Movie, UserReview])
 
 @app.on_event('shutdown')
 def startup():
     if not connection.is_closed():
         connection.close()
+        print('[Database] closed')
 
+# Inicio de los endpoints
 @app.get('/')
+# async permite recibir diversas peticiones al mismo tiempo
 async def index():
     return {'message': 'Hola mundo desde FastAPI'}
 
