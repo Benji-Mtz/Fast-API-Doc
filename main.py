@@ -1,9 +1,10 @@
 from typing import List
 
 from fastapi import FastAPI
+# Excepcion controlada
 from fastapi import HTTPException
 
-# Imprtaciones de modelos de Tablas
+# Importaciones de modelos de Tablas
 from database import User
 from database import Movie
 from database import UserReview
@@ -11,6 +12,7 @@ from database import UserReview
 # Importacion de la base de datos
 from database import database as connection
 
+# Schemas de los modelos a aceptar en cada endpoint
 from schemas import UserRequestModel
 from schemas import UserResponseModel
 
@@ -44,11 +46,12 @@ def startup():
 async def index():
     return {'message': 'Hola mundo desde FastAPI'}
 
+# Creación de un usuario
 @app.post('/users', response_model=UserResponseModel)
 async def create_user(user: UserRequestModel):
     
     if User.select().where(User.username == user.username).exists():
-        return HTTPException(409, 'El username ya existe.')
+        raise HTTPException(status_code=409, detail='El username ya existe.')
     
     hash_password = User.create_password(user.password)
     
@@ -57,7 +60,8 @@ async def create_user(user: UserRequestModel):
         password=hash_password
     )
     
-    return UserResponseModel(id=user.id, username=user.username)
+    # return UserResponseModel(id=user.id, username=user.username)
+    return user
 
 @app.post('/reviews', response_model=ReviewResponseModel)
 async def create_review(user_review: ReviewRequestModel):

@@ -1,3 +1,4 @@
+# Libreria de MD5 para el hash de la contraseña
 import hashlib
 
 # ORM peewee for MySQL u other databases *
@@ -26,6 +27,7 @@ class User(Model):
         database = database
         table_name = 'users'
     
+    # @classmethod hace que la funcion se pueda llamar sin instanciar la clase y apartir de ahí se puede llamar
     @classmethod
     def create_password(cls, password):
         h = hashlib.md5()
